@@ -1,4 +1,4 @@
-package org.example.hooks;
+package org.example.utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -63,6 +63,12 @@ public final class ApiTraffic {
         assertEndpoint("GET", "/profile");
         assertEndpoint("PUT", "/profile");
         assertEndpoint("POST", "/profile/image");
+        for (ApiResponse response : RESPONSES) {
+            if (response.status() < 200 || response.status() >= 300) {
+                throw new AssertionError(response.method() + " " + response.endpoint()
+                        + " returned HTTP " + response.status());
+            }
+        }
     }
 
     private static void assertEndpoint(String method, String suffix) {

@@ -14,6 +14,7 @@ jobs:
     env:
       SITE_USERNAME: ${{ secrets.SITE_USERNAME }}
       SITE_PASSWORD: ${{ secrets.SITE_PASSWORD }}
+      PROFILE_PICTURE_BASE64: ${{ secrets.PROFILE_PICTURE_BASE64 }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -25,6 +26,15 @@ jobs:
           cache: maven
       - name: Set up Chrome
         uses: browser-actions/setup-chrome@v1
+      - name: Prepare private profile-picture test data
+        run: |
+          test -n "$PROFILE_PICTURE_BASE64" || {
+            echo "::error::Add the PROFILE_PICTURE_BASE64 Actions secret."
+            exit 1
+          }
+          mkdir -p target/test-data
+          printf '%s' "$PROFILE_PICTURE_BASE64" | base64 --decode > target/test-data/profile-picture-source.jpg
+          echo "PROFILE_PICTURE_PATH=target/test-data/profile-picture-source.jpg" >> "$GITHUB_ENV"
       - name: Run Cucumber tests
         run: mvn --batch-mode --no-transfer-progress test
       - name: Upload reports and screenshots
