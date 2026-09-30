@@ -1,4 +1,4 @@
-package org.example.testdata;
+package frameworkfiles.testdata;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

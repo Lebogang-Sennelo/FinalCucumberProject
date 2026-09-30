@@ -1,15 +1,15 @@
-package org.example.steps;
+package frameworkfiles.steps;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.example.hooks.BrowserSession;
-import org.example.pages.DashboardPage;
-import org.example.pages.HomePage;
-import org.example.pages.LoginPage;
-import org.example.pages.ProfilePage;
-import org.example.testdata.TestData;
-import org.example.utils.ProfileApiClient;
+import frameworkfiles.hooks.BrowserSession;
+import frameworkfiles.pages.DashboardPage;
+import frameworkfiles.pages.HomePage;
+import frameworkfiles.pages.LoginPage;
+import frameworkfiles.pages.ProfilePage;
+import frameworkfiles.testdata.TestData;
+import frameworkfiles.utils.ProfileApiClient;
 import org.openqa.selenium.WebDriver;
 
 public class ProfilePictureSteps {

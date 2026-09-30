@@ -1,4 +1,4 @@
-package org.example.utils;
+package frameworkfiles.utils;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;

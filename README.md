@@ -58,7 +58,7 @@ When running the test directly from IntelliJ IDEA, headed Chrome is used by defa
 
 ### Run directly from IntelliJ IDEA
 
-Reload the Maven project, then open `src/test/java/org/example/runner/RunCucumberTest.java`
+Reload the Maven project, then open `src/test/java/frameworkfiles/runner/RunCucumberTest.java`
 and click the green run icon beside the class. If you have the Cucumber for Java plugin
 installed, you can also run the scenario from `src/test/resources/features/profile-picture.feature`.
 If `local.credentials.json` is absent and `SITE_PASSWORD` is not set in IntelliJ's run

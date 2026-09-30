@@ -1,4 +1,4 @@
-package org.example.testdata;
+package frameworkfiles.testdata;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;

@@ -1,10 +1,10 @@
-package org.example.hooks;
+package frameworkfiles.hooks;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
-import org.example.utils.ApiTraffic;
-import org.example.utils.DriverFactory;
+import frameworkfiles.utils.ApiTraffic;
+import frameworkfiles.utils.DriverFactory;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 
@@ -16,13 +16,13 @@ public class TestHooks {
     @Before
     public void startBrowser() {
         ApiTraffic.reset();
-        org.example.hooks.BrowserSession.setDriver(DriverFactory.createChromeDriver());
+        BrowserSession.setDriver(DriverFactory.createChromeDriver());
     }
 
     @After
     public void finishScenario(Scenario scenario) throws IOException {
         try {
-            var driver = org.example.hooks.BrowserSession.getDriverOrNull();
+            var driver = BrowserSession.getDriverOrNull();
             if (driver instanceof TakesScreenshot screenshotDriver) {
                 byte[] screenshot = screenshotDriver.getScreenshotAs(OutputType.BYTES);
                 scenario.attach(screenshot, "image/png", "Profile workflow");

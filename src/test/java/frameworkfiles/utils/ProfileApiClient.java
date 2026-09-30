@@ -1,8 +1,8 @@
-package org.example.utils;
+package frameworkfiles.utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.testdata.TestData;
+import frameworkfiles.testdata.TestData;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
