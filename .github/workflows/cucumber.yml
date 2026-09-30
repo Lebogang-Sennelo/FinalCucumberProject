@@ -36,7 +36,7 @@ jobs:
           printf '%s' "$PROFILE_PICTURE_BASE64" | base64 --decode > target/test-data/profile-picture-source.jpg
           echo "PROFILE_PICTURE_PATH=target/test-data/profile-picture-source.jpg" >> "$GITHUB_ENV"
       - name: Run Cucumber tests
-        run: mvn --batch-mode --no-transfer-progress test
+        run: mvn --batch-mode --no-transfer-progress -Dbrowser.headless=true test
       - name: Upload reports and screenshots
         if: always()
         uses: actions/upload-artifact@v4

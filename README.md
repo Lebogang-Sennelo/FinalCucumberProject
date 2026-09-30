@@ -36,12 +36,46 @@ application.
 
 ## Run locally
 
-Set credentials as environment variables; do not place account credentials in source control:
+Create `local.credentials.json` in the project root to avoid entering the password on each run:
+
+```json
+{
+  "SITE_PASSWORD": "your-password"
+}
+```
+
+The file is ignored by Git and read automatically by both the PowerShell launcher and IntelliJ
+test runs. It stores the password in plain text on your machine; do not remove it from `.gitignore`
+or commit it. If the file is absent, the launcher securely prompts for the password. The launcher
+uses the supplied profile picture from your Downloads folder and runs headed Chrome:
 
 ```powershell
-$env:SITE_PASSWORD = "your-account-password"
+.\run-profile-picture-test.ps1
+```
+
+For headless mode, run `.\run-profile-picture-test.ps1 -Headless`.
+When running the test directly from IntelliJ IDEA, headed Chrome is used by default.
+
+### Run directly from IntelliJ IDEA
+
+Reload the Maven project, then open `src/test/java/org/example/runner/RunCucumberTest.java`
+and click the green run icon beside the class. If you have the Cucumber for Java plugin
+installed, you can also run the scenario from `src/test/resources/features/profile-picture.feature`.
+If `local.credentials.json` is absent and `SITE_PASSWORD` is not set in IntelliJ's run
+configuration, the test opens a masked password dialog. The profile picture is loaded
+automatically from `~/Downloads/DC9EBAC7-2F02-4445-944D-C336462CD73A.JPG`; set
+`PROFILE_PICTURE_PATH` in the run configuration to use another image.
+
+To run Maven directly instead, set the required environment variables in the same PowerShell
+session before starting Maven:
+
+```powershell
+$securePassword = Read-Host "Enter SITE_PASSWORD" -AsSecureString
+$env:SITE_PASSWORD = (New-Object System.Net.NetworkCredential("", $securePassword)).Password
 $env:PROFILE_PICTURE_PATH = "C:\path\to\profile-picture.jpg"
-mvn test
+mvn '-Dbrowser.headless=false' test
+Remove-Item Env:SITE_PASSWORD
+Remove-Item Env:PROFILE_PICTURE_PATH
 ```
 
 The test defaults to the Ndosi account `laylayt@gmail.com`. Override it with `SITE_USERNAME`
@@ -49,18 +83,27 @@ when you need to use another account. In GitHub Actions, the username is configu
 `.github/workflows/cucumber.yml`; keep the account password in the `SITE_PASSWORD` repository
 secret.
 
-To watch the scenario in a visible Chrome window, run:
+To watch the scenario in a visible Chrome window when running Maven directly, use:
 
 ```powershell
 mvn '-Dbrowser.headless=false' test
 ```
 
-Headless mode remains enabled by default for CI. The browser closes after the scenario finishes.
+CI runs in headless mode; local test runs use headed Chrome by default. The browser closes after
+the scenario finishes.
 
-The default site URL is the production URL above. `PROFILE_PICTURE_PATH` must point to the
+The default site URL is the production URL above. `PROFILE_PICTURE_PATH` can point to the
 provided JPEG (or another supported JPEG, PNG, GIF, or WEBP image). `SITE_URL` and
 `API_BASE_URL` can be set to override the application and API URLs. The application default
 API URL is `https://www.ndosiautomation.co.za/APIDEV`.
+
+### IntelliJ IDEA cannot resolve Cucumber or Selenium
+
+The test dependencies are declared with Maven's `test` scope, so IntelliJ must load this
+project as a Maven project. Open the root `pom.xml` and select **Load Maven Project**, or
+click **Reload All Maven Projects** in the Maven tool window. Then select a JDK 21 project
+SDK and rebuild. The module configuration marks `src/test/java` as test sources rather than
+main sources; do not add these test-only dependencies to production scope.
 
 ## Reports and screenshots
 

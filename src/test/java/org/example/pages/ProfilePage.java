@@ -41,7 +41,7 @@ public class ProfilePage extends BasePage {
         String message = alert.getText();
         alert.accept();
         assertTrue(message.contains("Profile updated successfully"),
-                "Expected a successful profile update confirmation.");
+                "Expected a successful profile update confirmation, but the site displayed: " + message);
         return this;
     }
 

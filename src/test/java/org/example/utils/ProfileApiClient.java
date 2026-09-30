@@ -7,11 +7,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.Duration;
+import java.util.Map;
 import java.util.Locale;
 import java.util.Set;
 
@@ -33,19 +29,27 @@ public final class ProfileApiClient {
         assertNotNull(token, "The authenticated session token is missing.");
 
         String profileUrl = TestData.apiBaseUrl() + "/profile";
-        HttpRequest request = HttpRequest.newBuilder(URI.create(profileUrl))
-                .timeout(Duration.ofSeconds(30))
-                .header("Authorization", "Bearer " + token)
-                .header("Accept", "application/json")
-                .GET()
-                .build();
-        HttpResponse<String> response = HttpClient.newHttpClient()
-                .send(request, HttpResponse.BodyHandlers.ofString());
-        ApiTraffic.record("GET", profileUrl, response.statusCode());
-        assertTrue(response.statusCode() >= 200 && response.statusCode() < 300,
-                "GET /profile returned HTTP " + response.statusCode());
+        Object responseResult = ((JavascriptExecutor) driver).executeAsyncScript(
+                "const url = arguments[0], token = arguments[1], done = arguments[arguments.length - 1];"
+                        + "fetch(url, {headers: {Authorization: `Bearer ${token}`, Accept: 'application/json'}})"
+                        + ".then(async response => done({status: response.status, body: await response.text()}))"
+                        + ".catch(error => done({error: error.message}));",
+                profileUrl, token);
+        if (!(responseResult instanceof Map<?, ?> response)) {
+            throw new AssertionError("GET /profile did not return a readable browser response.");
+        }
+        if (response.containsKey("error")) {
+            throw new AssertionError("GET /profile failed in the browser: " + response.get("error"));
+        }
+        if (!(response.get("status") instanceof Number status)
+                || !(response.get("body") instanceof String responseBody)) {
+            throw new AssertionError("GET /profile returned an invalid browser response.");
+        }
+        ApiTraffic.record("GET", profileUrl, status.intValue());
+        assertTrue(status.intValue() >= 200 && status.intValue() < 300,
+                "GET /profile returned HTTP " + status);
 
-        String persistedPicture = findProfilePicture(JSON.readTree(response.body()));
+        String persistedPicture = findProfilePicture(JSON.readTree(responseBody));
         assertNotNull(persistedPicture, "GET /profile did not return a profile picture.");
         assertFalse(persistedPicture.isBlank(), "GET /profile returned an empty profile picture.");
         assertTrue(persistedPicture.equals(displayedPicture)

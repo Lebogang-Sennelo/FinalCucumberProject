@@ -16,13 +16,13 @@ public class TestHooks {
     @Before
     public void startBrowser() {
         ApiTraffic.reset();
-        BrowserSession.setDriver(DriverFactory.createChromeDriver());
+        org.example.hooks.BrowserSession.setDriver(DriverFactory.createChromeDriver());
     }
 
     @After
     public void finishScenario(Scenario scenario) throws IOException {
         try {
-            var driver = BrowserSession.getDriverOrNull();
+            var driver = org.example.hooks.BrowserSession.getDriverOrNull();
             if (driver instanceof TakesScreenshot screenshotDriver) {
                 byte[] screenshot = screenshotDriver.getScreenshotAs(OutputType.BYTES);
                 scenario.attach(screenshot, "image/png", "Profile workflow");

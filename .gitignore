@@ -1,4 +1,5 @@
 target/
+local.credentials.json
 src/test/resources/test-data/profile-picture.jpg
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
