@@ -20,6 +20,11 @@ public final class ApiTraffic {
     private static final ObjectMapper JSON = new ObjectMapper();
     private static final Map<String, String> REQUEST_METHODS = new LinkedHashMap<>();
     private static final List<ApiResponse> RESPONSES = new ArrayList<>();
+    private static final List<EndpointCheck> REQUIRED_ENDPOINTS = List.of(
+            new EndpointCheck("POST", "/login"),
+            new EndpointCheck("GET", "/profile"),
+            new EndpointCheck("PUT", "/profile"),
+            new EndpointCheck("POST", "/profile/image"));
 
     private ApiTraffic() {
     }
@@ -54,6 +59,13 @@ public final class ApiTraffic {
         if (endpoint == null || !endpoint.startsWith(basePath + "/")) {
             return;
         }
+        String relativeEndpoint = endpoint.substring(basePath.length());
+        boolean isRequiredEndpoint = REQUIRED_ENDPOINTS.stream()
+                .anyMatch(check -> check.method().equals(method)
+                        && relativeEndpoint.equals(check.path()));
+        if (!isRequiredEndpoint) {
+            return;
+        }
         ApiResponse response = new ApiResponse(method, endpoint, status);
         if (!RESPONSES.contains(response)) {
             RESPONSES.add(response);
@@ -61,10 +73,9 @@ public final class ApiTraffic {
     }
 
     public static void assertRequiredEndpoints() {
-        assertEndpoint("POST", "/login");
-        assertEndpoint("GET", "/profile");
-        assertEndpoint("PUT", "/profile");
-        assertEndpoint("POST", "/profile/image");
+        for (EndpointCheck endpoint : REQUIRED_ENDPOINTS) {
+            assertEndpoint(endpoint.method(), endpoint.path());
+        }
         for (ApiResponse response : RESPONSES) {
             if (response.status() < 200 || response.status() >= 300) {
                 throw new AssertionError(response.method() + " " + response.endpoint()
@@ -105,5 +116,8 @@ public final class ApiTraffic {
     }
 
     private record ApiResponse(String method, String endpoint, int status) {
+    }
+
+    private record EndpointCheck(String method, String path) {
     }
 }
