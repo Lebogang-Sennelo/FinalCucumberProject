@@ -1,0 +1,39 @@
+name: Cucumber profile-picture tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 22 * * *"
+
+jobs:
+  cucumber:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SITE_USERNAME: ${{ secrets.SITE_USERNAME }}
+      SITE_PASSWORD: ${{ secrets.SITE_PASSWORD }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Set up Chrome
+        uses: browser-actions/setup-chrome@v1
+      - name: Run Cucumber tests
+        run: mvn --batch-mode --no-transfer-progress test
+      - name: Upload reports and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cucumber-report-and-screenshots
+          path: |
+            target/cucumber-reports/
+            target/screenshots/
+            target/surefire-reports/
+          if-no-files-found: warn
