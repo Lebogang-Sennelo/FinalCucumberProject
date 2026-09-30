@@ -45,6 +45,14 @@ $env:PROFILE_PICTURE_PATH = "C:\path\to\profile-picture.jpg"
 mvn test
 ```
 
+To watch the scenario in a visible Chrome window, run:
+
+```powershell
+mvn '-Dbrowser.headless=false' test
+```
+
+Headless mode remains enabled by default for CI. The browser closes after the scenario finishes.
+
 The default site URL is the production URL above. `PROFILE_PICTURE_PATH` must point to the
 provided JPEG (or another supported JPEG, PNG, GIF, or WEBP image). `SITE_URL` and
 `API_BASE_URL` can be set to override the application and API URLs. The application default

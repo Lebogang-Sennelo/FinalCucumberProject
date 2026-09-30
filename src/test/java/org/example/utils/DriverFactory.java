@@ -15,8 +15,10 @@ public final class DriverFactory {
 
     public static WebDriver createChromeDriver() {
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless=new", "--no-sandbox", "--disable-dev-shm-usage",
-                "--window-size=1440,1000");
+        options.addArguments("--no-sandbox", "--disable-dev-shm-usage", "--window-size=1440,1000");
+        if (Boolean.parseBoolean(System.getProperty("browser.headless", "true"))) {
+            options.addArguments("--headless=new");
+        }
         LoggingPreferences logging = new LoggingPreferences();
         logging.enable(LogType.PERFORMANCE, Level.ALL);
         options.setCapability("goog:loggingPrefs", logging);
