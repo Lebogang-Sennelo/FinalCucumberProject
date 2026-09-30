@@ -22,7 +22,8 @@ public class TestHooks {
     @After
     public void finishScenario(Scenario scenario) throws IOException {
         try {
-            if (BrowserSession.getDriver() instanceof TakesScreenshot screenshotDriver) {
+            var driver = BrowserSession.getDriverOrNull();
+            if (driver instanceof TakesScreenshot screenshotDriver) {
                 byte[] screenshot = screenshotDriver.getScreenshotAs(OutputType.BYTES);
                 scenario.attach(screenshot, "image/png", "Profile workflow");
                 Path screenshotPath = Path.of("target", "screenshots",
@@ -30,11 +31,15 @@ public class TestHooks {
                 Files.createDirectories(screenshotPath.getParent());
                 Files.write(screenshotPath, screenshot);
             }
-            ApiTraffic.collectBrowserResponses(BrowserSession.getDriver());
+            if (driver != null) {
+                ApiTraffic.collectBrowserResponses(driver);
+            }
         } finally {
-            ApiTraffic.writeReport();
-            BrowserSession.stop();
+            try {
+                ApiTraffic.writeReport();
+            } finally {
+                BrowserSession.stop();
+            }
         }
     }
-
 }

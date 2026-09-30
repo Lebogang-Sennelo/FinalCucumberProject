@@ -1,6 +1,9 @@
 package org.example.pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
 
 public class LoginPage extends BasePage {
@@ -21,7 +24,25 @@ public class LoginPage extends BasePage {
         waitForVisible(EMAIL).sendKeys(username);
         driver.findElement(PASSWORD).sendKeys(password);
         clickWhenReady(SUBMIT);
-        waitForAuthenticatedSession();
+        wait.until(currentDriver -> {
+            try {
+                currentDriver.switchTo().alert();
+                return true;
+            } catch (NoAlertPresentException ignored) {
+                return Boolean.TRUE.equals(
+                        ((JavascriptExecutor) currentDriver).executeScript(
+                                "return Boolean(localStorage.getItem('authToken'));"));
+            }
+        });
+
+        try {
+            Alert alert = driver.switchTo().alert();
+            String message = alert.getText();
+            alert.accept();
+            throw new AssertionError("Sign-in was rejected by the site: " + message);
+        } catch (NoAlertPresentException ignored) {
+            // A stored auth token indicates a successful sign-in.
+        }
         return new DashboardPage(driver);
     }
 }

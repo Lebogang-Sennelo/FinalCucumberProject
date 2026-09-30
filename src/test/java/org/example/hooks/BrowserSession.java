@@ -15,14 +15,19 @@ public final class BrowserSession {
         return driver;
     }
 
+    public static WebDriver getDriverOrNull() {
+        return driver;
+    }
+
     public static void setDriver(WebDriver webDriver) {
         driver = webDriver;
     }
 
     public static void stop() {
         if (driver != null) {
-            driver.quit();
+            WebDriver currentDriver = driver;
             driver = null;
+            currentDriver.quit();
         }
     }
 }

@@ -109,5 +109,6 @@ src/test/java/org/example/hooks/       Browser lifecycle and screenshot hooks
 src/test/java/org/example/utils/       WebDriver factory, API client, and API report
 src/test/java/org/example/testdata/    Credentials, URLs, and profile-picture test data
 src/test/resources/features/           Gherkin feature
+src/test/resources/cucumber.properties Quiet Cucumber report publishing banner
 .github/workflows/cucumber.yml         CI workflow and daily schedule
 ```
