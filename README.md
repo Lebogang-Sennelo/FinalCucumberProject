@@ -39,11 +39,15 @@ application.
 Set credentials as environment variables; do not place account credentials in source control:
 
 ```powershell
-$env:SITE_USERNAME = "your-account-email"
 $env:SITE_PASSWORD = "your-account-password"
 $env:PROFILE_PICTURE_PATH = "C:\path\to\profile-picture.jpg"
 mvn test
 ```
+
+The test defaults to the Ndosi account `laylayt@gmail.com`. Override it with `SITE_USERNAME`
+when you need to use another account. In GitHub Actions, the username is configured in
+`.github/workflows/cucumber.yml`; keep the account password in the `SITE_PASSWORD` repository
+secret.
 
 To watch the scenario in a visible Chrome window, run:
 
@@ -82,7 +86,6 @@ Add these repository Actions secrets before running the workflow:
 
 | Secret | Value |
 | --- | --- |
-| `SITE_USERNAME` | Authorized Ndosi site account email |
 | `SITE_PASSWORD` | Account password |
 | `PROFILE_PICTURE_BASE64` | Base64 of the supplied JPEG image |
 
@@ -91,7 +94,6 @@ The test resizes and JPEG-compresses the supplied image to
 secret so it fits within the secret-size limit:
 
 ```powershell
-$env:SITE_USERNAME = "your-account-email"
 $env:SITE_PASSWORD = "your-account-password"
 $env:PROFILE_PICTURE_PATH = "C:\path\to\profile-picture.jpg"
 mvn test
@@ -101,8 +103,8 @@ $env:PROFILE_PICTURE_BASE64 = [Convert]::ToBase64String(
 ```
 
 Add the resulting `$env:PROFILE_PICTURE_BASE64` value as the `PROFILE_PICTURE_BASE64` Actions
-secret in repository settings, then remove the local environment variable. Store the username,
-password, and image value as GitHub Actions secrets, never in source control. The workflow
+secret in repository settings, then remove the local environment variable. Store the account
+password and image value as GitHub Actions secrets, never in source control. The workflow
 decodes the private image into the ignored `target` directory before running tests.
 It uses Java 21 and Chrome, runs `mvn test`, and uploads reports and screenshots for download
 from the Actions run artifacts.

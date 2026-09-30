@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      SITE_USERNAME: ${{ secrets.SITE_USERNAME }}
+      SITE_USERNAME: laylayt@gmail.com
       SITE_PASSWORD: ${{ secrets.SITE_PASSWORD }}
       PROFILE_PICTURE_BASE64: ${{ secrets.PROFILE_PICTURE_BASE64 }}
     steps:

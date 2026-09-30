@@ -17,7 +17,7 @@ public final class TestData {
     }
 
     public static String username() {
-        return requiredEnvironmentVariable("SITE_USERNAME");
+        return environmentOrDefault("SITE_USERNAME", "laylayt@gmail.com");
     }
 
     public static String password() {
