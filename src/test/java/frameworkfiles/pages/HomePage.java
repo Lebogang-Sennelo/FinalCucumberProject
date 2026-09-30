@@ -18,6 +18,7 @@ public class HomePage extends BasePage {
 
     public HomePage open() {
         driver.get(TestData.siteUrl());
+        driver.manage().window().maximize();
         return this;
     }
 

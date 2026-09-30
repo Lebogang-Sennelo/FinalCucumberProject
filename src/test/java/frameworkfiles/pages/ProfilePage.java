@@ -35,6 +35,7 @@ public class ProfilePage extends BasePage {
         clickWhenReady(EDIT_PROFILE);
         WebElement imageInput = wait.until(ExpectedConditions.presenceOfElementLocated(IMAGE_INPUT));
         imageInput.sendKeys(imagePath.toAbsolutePath().toString());
+        Thread.sleep(3_000);
         clickWhenReady(SAVE_CHANGES);
 
         var alert = wait.until(ExpectedConditions.alertIsPresent());
@@ -42,6 +43,7 @@ public class ProfilePage extends BasePage {
         alert.accept();
         assertTrue(message.contains("Profile updated successfully"),
                 "Expected a successful profile update confirmation, but the site displayed: " + message);
+        Thread.sleep(3_000);
         return this;
     }
 

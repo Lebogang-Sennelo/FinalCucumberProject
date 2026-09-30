@@ -20,9 +20,11 @@ public class LoginPage extends BasePage {
         return this;
     }
 
-    public DashboardPage signIn(String username, String password) {
+    public DashboardPage signIn(String username, String password) throws InterruptedException {
         waitForVisible(EMAIL).sendKeys(username);
+        Thread.sleep(3_000);
         driver.findElement(PASSWORD).sendKeys(password);
+        Thread.sleep(3_000);
         clickWhenReady(SUBMIT);
         wait.until(currentDriver -> {
             try {

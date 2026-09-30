@@ -32,7 +32,7 @@ public class ProfilePictureSteps {
     }
 
     @When("I sign in with the configured account")
-    public void signIn() {
+    public void signIn() throws InterruptedException {
         dashboardPage = new LoginPage(driver).signIn(TestData.username(), TestData.password());
         dashboardPage.waitUntilLoaded();
     }
